@@ -5,7 +5,7 @@
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite Events into the Events Post Type.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            DanZ Digital Designs
@@ -170,19 +170,6 @@ function churchsuite_handle_save()
 	$redirect_url = get_bloginfo("url") . "/wp-admin/options-general.php?page=churchsuite&status=success";
 	header("Location: " . $redirect_url);
 	exit;
-}
-
-
-
-if (isset($_GET['status']) && $_GET['status'] == 'success') {
-?>
-	<div id="message" class="updated notice is-dismissible">
-		<p><?php _e("Settings updated!", "churchsuite-api"); ?></p>
-		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e("Dismiss this notice.", "churchsuite-api"); ?></span>
-		</button>
-	</div>
-<?php
 }
 
 // ChurchSuite Import Events API

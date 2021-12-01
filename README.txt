@@ -17,6 +17,9 @@ e.g.
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixing Settings page.
+
 = 1.2.0 =
 * Added additonal headers.
 
