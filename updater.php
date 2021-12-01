@@ -11,7 +11,7 @@ class ChurchSuite_Events_PluginUpdater
 	private $githubAPIResult; // holds data from GitHub
 	private $accessToken; // GitHub private repo token
 
-	function __construct($pluginFile, $gitHubUsername, $gitHubProjectName, $accessToken = '')
+	function __construct($pluginFile, $gitHubUsername, $gitHubProjectName, $accessToken = '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')
 	{
 		add_filter("pre_set_site_transient_update_plugins", array($this, "setTransitent"));
 		add_filter("plugins_api", array($this, "setPluginInfo"), 10, 3);
