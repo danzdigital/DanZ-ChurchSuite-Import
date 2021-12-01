@@ -15,5 +15,11 @@ e.g.
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.3 =
+* Troubleshooting bugs.
+
+= 1.0.2 =
+* Troubleshooting bugs.
+
+= 1.0.0 =
 * First Update to plugin.
