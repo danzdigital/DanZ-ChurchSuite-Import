@@ -5,7 +5,7 @@
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite Events into the Events Post Type.
- * Version:           1.0.6
+ * Version:           1.1.0
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       danz-churchsuite-events
@@ -18,66 +18,91 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-if (!function_exists('churchsuite_events')) {
+/**
+ * Register the "churchsuite_events" custom post type
+ */
+function danz_churchsuite_events_setup() {
 
-	// 	// Register ChurchSuites Events Posts
-	function churchsuite_events()
-	{
+	$post_labels = array(
+		'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events'),
+		'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events'),
+		'menu_name'             => __('ChurchSuite Events', 'churchsuite_events'),
+		'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events'),
+		'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events'),
+		'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events'),
+		'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events'),
+		'all_items'             => __('All ChurchSuite Events', 'churchsuite_events'),
+		'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events'),
+		'add_new'               => __('Add New', 'churchsuite_events'),
+		'new_item'              => __('New ChurchSuite Event', 'churchsuite_events'),
+		'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events'),
+		'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events'),
+		'view_item'             => __('View ChurchSuite Event', 'churchsuite_events'),
+		'view_items'            => __('View ChurchSuite Events', 'churchsuite_events'),
+		'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events'),
+		'not_found'             => __('Not found', 'churchsuite_events'),
+		'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events'),
+		'featured_image'        => __('Featured Image', 'churchsuite_events'),
+		'set_featured_image'    => __('Set featured image', 'churchsuite_events'),
+		'remove_featured_image' => __('Remove featured image', 'churchsuite_events'),
+		'use_featured_image'    => __('Use as featured image', 'churchsuite_events'),
+		'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events'),
+		'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events'),
+		'items_list'            => __('ChurchSuite Events list', 'churchsuite_events'),
+		'items_list_navigation' => __('Items list navigation', 'churchsuite_events'),
+		'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events'),
+	);
+	$post_args = array(
+		'label'                 => __('ChurchSuite Event', 'churchsuite_events'),
+		'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events'),
+		'labels'                => $post_labels,
+		'supports'              => array('title', 'editor', 'thumbnail', 'comments', 'custom-fields'),
+		'hierarchical'          => false,
+		'public'                => true,
+		'show_ui'               => true,
+		'show_in_menu'          => true,
+		'menu_position'         => 5,
+		'menu_icon'             => 'dashicons-calendar-alt',
+		'show_in_admin_bar'     => true,
+		'show_in_nav_menus'     => true,
+		'can_export'            => true,
+		'has_archive'           => true,
+		'exclude_from_search'   => false,
+		'publicly_queryable'    => true,
+		'capability_type'       => 'post',
+		'show_in_rest'          => true,
+		'rest_base'             => 'event',
+	);
+	register_post_type('churchsuite_events', $post_args);
 
-		$post_labels = array(
-			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events'),
-			'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events'),
-			'menu_name'             => __('ChurchSuite Events', 'churchsuite_events'),
-			'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events'),
-			'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events'),
-			'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events'),
-			'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events'),
-			'all_items'             => __('All ChurchSuite Events', 'churchsuite_events'),
-			'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events'),
-			'add_new'               => __('Add New', 'churchsuite_events'),
-			'new_item'              => __('New ChurchSuite Event', 'churchsuite_events'),
-			'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events'),
-			'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events'),
-			'view_item'             => __('View ChurchSuite Event', 'churchsuite_events'),
-			'view_items'            => __('View ChurchSuite Events', 'churchsuite_events'),
-			'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events'),
-			'not_found'             => __('Not found', 'churchsuite_events'),
-			'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events'),
-			'featured_image'        => __('Featured Image', 'churchsuite_events'),
-			'set_featured_image'    => __('Set featured image', 'churchsuite_events'),
-			'remove_featured_image' => __('Remove featured image', 'churchsuite_events'),
-			'use_featured_image'    => __('Use as featured image', 'churchsuite_events'),
-			'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events'),
-			'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events'),
-			'items_list'            => __('ChurchSuite Events list', 'churchsuite_events'),
-			'items_list_navigation' => __('Items list navigation', 'churchsuite_events'),
-			'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events'),
-		);
-		$post_args = array(
-			'label'                 => __('ChurchSuite Event', 'churchsuite_events'),
-			'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events'),
-			'labels'                => $post_labels,
-			'supports'              => array('title', 'editor', 'thumbnail', 'comments', 'custom-fields'),
-			'hierarchical'          => false,
-			'public'                => true,
-			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 5,
-			'menu_icon'             => 'dashicons-calendar-alt',
-			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
-			'can_export'            => true,
-			'has_archive'           => true,
-			'exclude_from_search'   => false,
-			'publicly_queryable'    => true,
-			'capability_type'       => 'post',
-			'show_in_rest'          => true,
-			'rest_base'             => 'churchsuite_event',
-		);
-		register_post_type('churchsuite_events', $post_args);
-	};
-	add_action('init', 'churchsuite_events', 0);
+} 
+add_action( 'init', 'danz_churchsuite_events_setup' );
+ 
+ 
+/**
+ * Activate the plugin.
+ */
+function danz_churchsuite_events_activate() { 
+    // Trigger our function that registers the custom post type plugin.
+    danz_churchsuite_events_setup(); 
+    // Clear the permalinks after the post type has been registered.
+    flush_rewrite_rules(); 
 }
+register_activation_hook( __FILE__, 'danz_churchsuite_events_activate' );
+
+/**
+ * Deactivation hook.
+ */
+function danz_churchsuite_events_deactivate() {
+    // Unregister the post type, so the rules are no longer in memory.
+    unregister_post_type( 'churchsuite_events' );
+    // Clear the permalinks to remove our post type's rules from the database.
+    flush_rewrite_rules();
+}
+register_deactivation_hook( __FILE__, 'danz_churchsuite_events_deactivate' );
+
+
+
 // ChurchSuite Events Admin Dashboard
 
 add_action("admin_menu", "ChurchSuite_Events_Plugin_Menu");

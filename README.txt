@@ -15,6 +15,12 @@ e.g.
 
 == Changelog ==
 
+= 1.1.0 =
+* Fixed bugs & Added Activated & Deactivated Hocks.
+
+= 1.0.7 =
+* Hopefully Fixed bugs.
+
 = 1.0.6 =
 * Hopefully Fixed bugs.
 
