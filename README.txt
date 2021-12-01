@@ -1,4 +1,6 @@
 === DanZ ChurchSuite Event Import ===
+Tested up to: 5.4
+
 
 This plugin creates a CPT of Events and Imports Events from ChurchSuite.
 == Installation ==
@@ -15,8 +17,11 @@ e.g.
 
 == Changelog ==
 
+= 1.2.0 =
+* Added additonal headers.
+
 = 1.1.0 =
-* Fixed bugs & Added Activated & Deactivated Hocks.
+* Fixed bugs & Added Activated & Deactivated Hooks.
 
 = 1.0.7 =
 * Hopefully Fixed bugs.
