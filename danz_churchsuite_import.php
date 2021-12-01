@@ -9,7 +9,6 @@
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       danz-churchsuite-events
- * GitHub Plugin URI: danzdigital/DanZ-ChurchSuite-Import
  */
 
 
@@ -251,7 +250,7 @@ function set_custom_edit_churchsuite_events_columns($columns)
 	$columns['event_start'] = __('Event Start', 'danz-churchsuite-events');
 	$columns['event_end'] = __('Event End', 'danz-churchsuite-events');
 	$columns['event_cat_name'] = __('Event Category', 'danz-churchsuite-events');
-	$columns['event_cat_id'] = __('Event ID', 'danz-churchsuite-events');
+	$columns['event_cat_id'] = __('Event Category ID', 'danz-churchsuite-events');
 
 
 	return $columns;
