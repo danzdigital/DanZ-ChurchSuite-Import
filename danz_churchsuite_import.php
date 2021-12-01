@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @since             0.9.0
+ * @since             1.0.0
  * @package           danz_churchsuite_import
  *
  * @wordpress-plugin
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           0.9.0
+ * Version:           1.0.0
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       danz-churchsuite-events
@@ -20,17 +20,10 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-
-require_once( 'updater.php' );
-if ( is_admin() ) {
-    new ChurchSuite_Events_PluginUpdater( __FILE__, 'danzdigital', "DanZ-ChurchSuite-Import" );
-}
-
-
 /**
  * Currently plugin version.
  */
-define('danz_churchsuite_import_VERSION', '0.9.0');
+define('danz_churchsuite_import_VERSION', '1.0.0');
 
 
 if (!function_exists('churchsuite_events')) {
