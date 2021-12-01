@@ -5,7 +5,7 @@
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite Events into the Events Post Type.
- * Version:           1.3.3
+ * Version:           1.4.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            DanZ Digital Designs
@@ -20,9 +20,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-/**
- * Register the "churchsuite_events" custom post type
- */
+// ChurchSuite Events Plugin Register CPT
 function danz_churchsuite_events_setup() {
 
 	$post_labels = array(
@@ -80,10 +78,7 @@ function danz_churchsuite_events_setup() {
 } 
 add_action( 'init', 'danz_churchsuite_events_setup' );
  
- 
-/**
- * Activate the plugin.
- */
+// ChurchSuite Events Plugin Activate Hook
 function danz_churchsuite_events_activate() { 
     // Trigger our function that registers the custom post type plugin.
     danz_churchsuite_events_setup(); 
@@ -92,9 +87,7 @@ function danz_churchsuite_events_activate() {
 }
 register_activation_hook( __FILE__, 'danz_churchsuite_events_activate' );
 
-/**
- * Deactivation hook.
- */
+// ChurchSuite Events Plugin Deactivation Hook
 function danz_churchsuite_events_deactivate() {
     // Unregister the post type, so the rules are no longer in memory.
     unregister_post_type( 'churchsuite_events' );
@@ -103,10 +96,7 @@ function danz_churchsuite_events_deactivate() {
 }
 register_deactivation_hook( __FILE__, 'danz_churchsuite_events_deactivate' );
 
-
-
 // ChurchSuite Events Admin Dashboard
-
 class ChurchSuiteEventDetails {
 	private $churchsuite_event_details_options;
 
@@ -190,35 +180,8 @@ class ChurchSuiteEventDetails {
 if ( is_admin() )
 	$churchsuite_event_details = new ChurchSuiteEventDetails();
 
-/* 
- * Retrieve this value with:
- * $churchsuite_event_details_options = get_option( 'churchsuite_event_details_option_name' ); // Array of All Options
- * $churchsuite_account_id_0 = $churchsuite_event_details_options['churchsuite_account_id_0']; // ChurchSuite Account ID
- */
-
-
-/*
- function churchsuite_handle_save()
-{
-
-	// Get the options that were sent
-	$url = (!empty($_POST["cs_acc_id"])) ? $_POST["cs_acc_id"] : NULL;
-
-	// Validation would go here
-
-	// Update the values
-	update_option("cs_acc_id", $url, TRUE);
-
-	// Redirect back to settings page
-	$redirect_url = get_bloginfo("url") . "/wp-admin/options-general.php?page=churchsuite&status=success";
-	header("Location: " . $redirect_url);
-	exit;
-}
-*/
-// ChurchSuite Import Events API
-
-function ChurchSuite_Import_Events()
-{
+// ChurchSuite Events Plugin Import Events
+function ChurchSuite_Import_Events(){
 
 	$response = wp_remote_get('https://' . get_option('churchsuite_event_details_option_name') . '.churchsuite.co.uk/embed/calendar/json');
 	$body     = wp_remote_retrieve_body($response);
@@ -281,11 +244,9 @@ function ChurchSuite_Import_Events()
 }
 add_action('init', 'ChurchSuite_Import_Events');
 
-
-// Add the custom columns to the ChurchSuite Event post type:
+// ChurchSuite Events Plugin Create Admin Columns
 add_filter('manage_churchsuite_events_posts_columns', 'set_custom_edit_churchsuite_events_columns');
-function set_custom_edit_churchsuite_events_columns($columns)
-{
+function set_custom_edit_churchsuite_events_columns($columns){
 	unset($columns['title']);
 	unset($columns['date']);
 	unset($columns['comments']);
@@ -302,10 +263,9 @@ function set_custom_edit_churchsuite_events_columns($columns)
 	return $columns;
 }
 
-// Add the data to the custom columns for the ChurchSuite Event post type:
+// ChurchSuite Events Plugin Insert Data into Admin Columns
 add_action('manage_churchsuite_events_posts_custom_column', 'custom_churchsuite_events_column', 10, 2);
-function custom_churchsuite_events_column($column, $post_id)
-{
+function custom_churchsuite_events_column($column, $post_id){
 	switch ($column) {
 
 		case 'event_id':
@@ -332,6 +292,7 @@ function custom_churchsuite_events_column($column, $post_id)
 	}
 }
 
+// ChurchSuite Events Plugin Admin Sortable Columns
 add_filter('manage_edit-churchsuite_events_sortable_columns', function ($columns) {
 	$columns['event_id'] = 'event_id';
 	$columns['event_start'] = 'event_start';
@@ -339,8 +300,7 @@ add_filter('manage_edit-churchsuite_events_sortable_columns', function ($columns
 	return $columns;
 });
 
-
-// Showing post with meta key filter in Portfolio Widget
+// Showing post with meta key filter in Post Widget
 add_action('elementor/query/featured_events', function ($query) {
 	// Get current meta Query
 	$meta_query = $query->get('meta_query');
@@ -377,4 +337,5 @@ add_action('elementor/query/featured_events', function ($query) {
 	$query->set('orderby', $meta_query);
 });
 
+// ChurchSuite Events Plugin Auto Update
 add_filter( 'auto_update_plugin', '__return_true' );

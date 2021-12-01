@@ -17,6 +17,9 @@ e.g.
 
 == Changelog ==
 
+= 1.4.0 =
+* Tidying up code and Troubleshooting code.
+
 = 1.3.3 =
 * Fixing Settings page Take 4.
 
