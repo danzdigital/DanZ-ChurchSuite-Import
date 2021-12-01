@@ -331,3 +331,5 @@ add_action('elementor/query/featured_events', function ($query) {
 
 	$query->set('orderby', $meta_query);
 });
+
+add_filter( 'auto_update_plugin', '__return_true' );
