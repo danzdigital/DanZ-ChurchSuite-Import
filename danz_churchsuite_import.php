@@ -220,7 +220,7 @@ if ( is_admin() )
 function ChurchSuite_Import_Events()
 {
 
-	$response = wp_remote_get('https://' . get_option('cs_acc_id') . '.churchsuite.co.uk/embed/calendar/json');
+	$response = wp_remote_get('https://' . get_option('churchsuite_event_details_option_name') . '.churchsuite.co.uk/embed/calendar/json');
 	$body     = wp_remote_retrieve_body($response);
 
 	$events = json_decode($body);
