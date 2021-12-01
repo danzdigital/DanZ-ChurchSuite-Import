@@ -19,16 +19,10 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-if( ! class_exists( 'ChurchSuite_Events_Updater' ) ){
-	include_once( plugin_dir_path( __FILE__ ) . 'updater.php' );
+require_once( 'updater.php' );
+if ( is_admin() ) {
+    new ChurchSuite_Events_PluginUpdater( __FILE__, 'danzdigital', "DanZ-ChurchSuite-Import" );
 }
-
-$updater = new ChurchSuite_Events_Updater( __FILE__ );
-$updater->set_username( 'danzdigital' );
-$updater->set_repository( 'DanZ-ChurchSuite-Import' );
-$updater->authorize( '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' ); // Your auth code goes here for private repos
-
-$updater->initialize();
 
 
 /**
