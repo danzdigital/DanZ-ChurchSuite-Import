@@ -17,6 +17,9 @@ e.g.
 
 == Changelog ==
 
+= 1.3.0 =
+* Fixing Settings page Take 2.
+
 = 1.2.1 =
 * Fixing Settings page.
 

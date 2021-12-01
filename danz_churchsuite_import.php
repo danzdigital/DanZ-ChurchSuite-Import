@@ -5,7 +5,7 @@
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite Events into the Events Post Type.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            DanZ Digital Designs
@@ -107,55 +107,97 @@ register_deactivation_hook( __FILE__, 'danz_churchsuite_events_deactivate' );
 
 // ChurchSuite Events Admin Dashboard
 
-add_action("admin_menu", "ChurchSuite_Events_Plugin_Menu");
+class ChurchSuiteEvents {
+	private $churchsuite_events_options;
 
-function ChurchSuite_Events_Plugin_Menu()
-{
-	add_submenu_page(
-		"options-general.php",  // Which menu parent
-		"ChurchSuite Events",            // Page title
-		"ChurchSuite Events",            // Menu title
-		"manage_options",       // Minimum capability (manage_options is an easy way to target administrators)
-		"churchsuite",            // Menu slug
-		"ChurchSuite_Events_Plugin_Options"     // Callback that prints the markup
-	);
-}
-
-function ChurchSuite_Events_Plugin_Options()
-{
-	if (!current_user_can("manage_options")) {
-		wp_die(__("You do not have sufficient permissions to access this page."));
+	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'churchsuite_events_add_plugin_page' ) );
+		add_action( 'admin_init', array( $this, 'churchsuite_events_page_init' ) );
 	}
-?>
-	<form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
 
-		<input type="hidden" name="action" value="update_churchsuite_settings" />
+	public function churchsuite_events_add_plugin_page() {
+		add_options_page(
+			'ChurchSuite Events', // page_title
+			'ChurchSuite Events', // menu_title
+			'manage_options', // capability
+			'churchsuite-events', // menu_slug
+			array( $this, 'churchsuite_events_create_admin_page' ) // function
+		);
+	}
 
-		<h3><?php _e("ChurchSuite ChurchSuite Events Info", "churchsuite-api"); ?></h3>
-		<p>
-			<label><?php _e("ChurchSuite Account ID:", "churchsuite-api"); ?></label>
-			<input class="" type="text" name="cs_acc_id" value="<?php echo get_option('cs_acc_id'); ?>" />
-		</p>
-		<input class="button button-primary" type="submit" value="<?php _e("Save", "churchsuite-api"); ?>" />
+	public function churchsuite_events_create_admin_page() {
+		$this->churchsuite_events_options = get_option( 'churchsuite_events_option_name' ); ?>
 
-	</form>
+		<div class="wrap">
+			<h2>ChurchSuite Events</h2>
+			<p>All ChurchSuite Settings</p>
+			<?php settings_errors(); ?>
 
-	<div class="churchsuite_info" style="margin-top: 20px;">
-		<p>
-			<?php
-			_e("Current ChurchSuite URL: https://", "churchsuite-api");
-			echo get_option("cs_acc_id");
-			_e(".churchsuite.co.uk/embed/calendar/json", "churchsuite-api");
-			?>
-		</p>
-	</div>
+			<form method="post" action="options.php">
+				<?php
+					settings_fields( 'churchsuite_events_option_group' );
+					do_settings_sections( 'churchsuite-events-admin' );
+					submit_button();
+				?>
+			</form>
+		</div>
+	<?php }
 
-<?php
+	public function churchsuite_events_page_init() {
+		register_setting(
+			'churchsuite_events_option_group', // option_group
+			'churchsuite_events_option_name', // option_name
+			array( $this, 'churchsuite_events_sanitize' ) // sanitize_callback
+		);
 
-	add_action('admin_post_update_churchsuite_settings', 'churchsuite_handle_save');
+		add_settings_section(
+			'churchsuite_events_setting_section', // id
+			'Settings', // title
+			array( $this, 'churchsuite_events_section_info' ), // callback
+			'churchsuite-events-admin' // page
+		);
+
+		add_settings_field(
+			'churchsuite_account_id_0', // id
+			'ChurchSuite Account ID', // title
+			array( $this, 'churchsuite_account_id_0_callback' ), // callback
+			'churchsuite-events-admin', // page
+			'churchsuite_events_setting_section' // section
+		);
+	}
+
+	public function churchsuite_events_sanitize($input) {
+		$sanitary_values = array();
+		if ( isset( $input['churchsuite_account_id_0'] ) ) {
+			$sanitary_values['churchsuite_account_id_0'] = sanitize_text_field( $input['churchsuite_account_id_0'] );
+		}
+
+		return $sanitary_values;
+	}
+
+	public function churchsuite_events_section_info() {
+		
+	}
+
+	public function churchsuite_account_id_0_callback() {
+		printf(
+			'<input class="regular-text" type="text" name="churchsuite_events_option_name[churchsuite_account_id_0]" id="churchsuite_account_id_0" value="%s">',
+			isset( $this->churchsuite_events_options['churchsuite_account_id_0'] ) ? esc_attr( $this->churchsuite_events_options['churchsuite_account_id_0']) : ''
+		);
+	}
+
 }
+if ( is_admin() )
+	$churchsuite_events = new ChurchSuiteEvents();
 
-function churchsuite_handle_save()
+/* 
+ * Retrieve this value with:
+ * $churchsuite_events_options = get_option( 'churchsuite_events_option_name' ); // Array of All Options
+ * $churchsuite_account_id_0 = $churchsuite_events_options['churchsuite_account_id_0']; // ChurchSuite Account ID
+ */
+
+/*
+ function churchsuite_handle_save()
 {
 
 	// Get the options that were sent
@@ -171,7 +213,7 @@ function churchsuite_handle_save()
 	header("Location: " . $redirect_url);
 	exit;
 }
-
+*/
 // ChurchSuite Import Events API
 
 function ChurchSuite_Import_Events()
