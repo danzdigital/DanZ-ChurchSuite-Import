@@ -15,6 +15,18 @@ e.g.
 
 == Changelog ==
 
+= 1.0.6 =
+* Hopefully Fixed bugs.
+
+= 1.0.6 =
+* Troubleshooting bugs.
+
+= 1.0.5 =
+* Troubleshooting bugs.
+
+= 1.0.4 =
+* Troubleshooting bugs.
+
 = 1.0.3 =
 * Troubleshooting bugs.
 
