@@ -5,7 +5,7 @@
  * Plugin Name:       DanZ - ChurchSuite Import
  * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
  * Description:       This plugin imports ChurchSuite Events into the Events Post Type.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       danz-churchsuite-events
@@ -27,7 +27,7 @@ if ( is_admin() ) {
 /**
  * Currently plugin version.
  */
-define('danz_churchsuite_import_VERSION', '1.0.3');
+define('danz_churchsuite_import_VERSION', '1.0.4');
 
 
 if (!function_exists('churchsuite_events')) {
