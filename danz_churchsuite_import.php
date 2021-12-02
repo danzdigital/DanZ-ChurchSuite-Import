@@ -1,16 +1,18 @@
 <?php
 
 /**
- * @since             2.0.1
+ * @since             2.0.2
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
+ * GitHub Plugin URI: https://github.com/danzdigital/DanZ-ChurchSuite-Import
+ * Primary Branch: main
  * 
  */
 
@@ -171,7 +173,8 @@ if (isset($_GET['status']) && $_GET['status'] == 'success') {
 function ChurchSuite_Import_Events()
 {
 
-	$response = wp_remote_get('https://' . get_option('cs_acc_id') . '.churchsuite.co.uk/embed/calendar/json');
+	$response = wp_remote_get('https://invernesscathedral.churchsuite.co.uk/embed/calendar/json');
+	// $response = wp_remote_get('https://' . get_option('cs_acc_id') . '.churchsuite.co.uk/embed/calendar/json');
 	$body     = wp_remote_retrieve_body($response);
 
 	$events = json_decode($body);
