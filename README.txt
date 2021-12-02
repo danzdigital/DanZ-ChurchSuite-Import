@@ -17,6 +17,9 @@ e.g.
 
 == Changelog ==
 
+= 2.0.0 =
+* Tidying up code and revert code.
+
 = 1.4.0 =
 * Tidying up code and Troubleshooting code.
 
