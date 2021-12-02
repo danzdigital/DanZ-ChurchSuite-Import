@@ -1,4 +1,4 @@
-=== DanZ ChurchSuite Event Import ===
+=== ChurchSuite Event Import ===
 Tested up to: 5.4
 
 
@@ -10,12 +10,14 @@ This section describes how to install the plugin and get it working.
 e.g.
 
 1. Upload `danz_churchsuite_import.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 2.1.1 =
+* Fixed Bugs with a workaround that only works for our Client.
 
 = 2.0.0 =
 * Tidying up code and revert code.
