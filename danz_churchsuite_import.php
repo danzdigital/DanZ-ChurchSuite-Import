@@ -12,7 +12,7 @@
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
  * GitHub Plugin URI: https://github.com/danzdigital/DanZ-ChurchSuite-Import
- * Primary Branch: main
+ * Primary Branch: dev
  * 
  */
 
