@@ -1,17 +1,17 @@
 <?php
 
 /**
- * @since             1.0.0
- * @package           danz_churchsuite_import
+ * @since             2.0.0
+ * @package           churchsuite_events_import
  *
  * @wordpress-plugin
- * Plugin Name:       DanZ - ChurchSuite Import
- * Plugin URI:        https://danzdigitaldesigns.co.uk/danz_churchsuite_import
+ * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           1.0.0
+ * Version:           2.0.0
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
- * Text Domain:       danz-churchsuite-events
+ * Text Domain:       churchsuite-events-import
+ * 
  */
 
 
@@ -26,33 +26,33 @@ if (!function_exists('churchsuite_events')) {
 	{
 
 		$post_labels = array(
-			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events'),
-			'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events'),
-			'menu_name'             => __('ChurchSuite Events', 'churchsuite_events'),
-			'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events'),
-			'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events'),
-			'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events'),
-			'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events'),
-			'all_items'             => __('All ChurchSuite Events', 'churchsuite_events'),
-			'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events'),
-			'add_new'               => __('Add New', 'churchsuite_events'),
-			'new_item'              => __('New ChurchSuite Event', 'churchsuite_events'),
-			'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events'),
-			'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events'),
-			'view_item'             => __('View ChurchSuite Event', 'churchsuite_events'),
-			'view_items'            => __('View ChurchSuite Events', 'churchsuite_events'),
-			'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events'),
-			'not_found'             => __('Not found', 'churchsuite_events'),
-			'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events'),
-			'featured_image'        => __('Featured Image', 'churchsuite_events'),
-			'set_featured_image'    => __('Set featured image', 'churchsuite_events'),
-			'remove_featured_image' => __('Remove featured image', 'churchsuite_events'),
-			'use_featured_image'    => __('Use as featured image', 'churchsuite_events'),
-			'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events'),
-			'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events'),
-			'items_list'            => __('ChurchSuite Events list', 'churchsuite_events'),
-			'items_list_navigation' => __('Items list navigation', 'churchsuite_events'),
-			'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events'),
+			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
+			'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events_import'),
+			'menu_name'             => __('ChurchSuite Events', 'churchsuite_events_import'),
+			'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events_import'),
+			'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events_import'),
+			'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events_import'),
+			'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events_import'),
+			'all_items'             => __('All ChurchSuite Events', 'churchsuite_events_import'),
+			'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events_import'),
+			'add_new'               => __('Add New', 'churchsuite_events_import'),
+			'new_item'              => __('New ChurchSuite Event', 'churchsuite_events_import'),
+			'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events_import'),
+			'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events_import'),
+			'view_item'             => __('View ChurchSuite Event', 'churchsuite_events_import'),
+			'view_items'            => __('View ChurchSuite Events', 'churchsuite_events_import'),
+			'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events_import'),
+			'not_found'             => __('Not found', 'churchsuite_events_import'),
+			'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events_import'),
+			'featured_image'        => __('Featured Image', 'churchsuite_events_import'),
+			'set_featured_image'    => __('Set featured image', 'churchsuite_events_import'),
+			'remove_featured_image' => __('Remove featured image', 'churchsuite_events_import'),
+			'use_featured_image'    => __('Use as featured image', 'churchsuite_events_import'),
+			'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events_import'),
+			'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events_import'),
+			'items_list'            => __('ChurchSuite Events list', 'churchsuite_events_import'),
+			'items_list_navigation' => __('Items list navigation', 'churchsuite_events_import'),
+			'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events_import'),
 		);
 		$rewrite = array(
 			'slug' => 'event',
@@ -61,8 +61,8 @@ if (!function_exists('churchsuite_events')) {
 			'feeds' => true,
 		);
 		$post_args = array(
-			'label'                 => __('ChurchSuite Event', 'churchsuite_events'),
-			'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events'),
+			'label'                 => __('ChurchSuite Event', 'churchsuite_events_import'),
+			'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events_import'),
 			'labels'                => $post_labels,
 			'supports'              => array('title', 'editor', 'thumbnail', 'comments', 'custom-fields'),
 			'hierarchical'          => false,
@@ -112,21 +112,21 @@ function ChurchSuite_Events_Plugin_Options()
 
 		<input type="hidden" name="action" value="update_churchsuite_settings" />
 
-		<h3><?php _e("ChurchSuite ChurchSuite Events Info", "churchsuite-api"); ?></h3>
+		<h3><?php _e("ChurchSuite ChurchSuite Events Info", "churchsuite_events_import"); ?></h3>
 		<p>
-			<label><?php _e("ChurchSuite Account ID:", "churchsuite-api"); ?></label>
+			<label><?php _e("ChurchSuite Account ID:", "churchsuite_events_import"); ?></label>
 			<input class="" type="text" name="cs_acc_id" value="<?php echo get_option('cs_acc_id'); ?>" />
 		</p>
-		<input class="button button-primary" type="submit" value="<?php _e("Save", "churchsuite-api"); ?>" />
+		<input class="button button-primary" type="submit" value="<?php _e("Save", "churchsuite_events_import"); ?>" />
 
 	</form>
 
 	<div class="churchsuite_info" style="margin-top: 20px;">
 		<p>
 			<?php
-			_e("Current ChurchSuite URL: https://", "churchsuite-api");
+			_e("Current ChurchSuite URL: https://", "churchsuite_events_import");
 			echo get_option("cs_acc_id");
-			_e(".churchsuite.co.uk/embed/calendar/json", "churchsuite-api");
+			_e(".churchsuite.co.uk/embed/calendar/json", "churchsuite_events_import");
 			?>
 		</p>
 	</div>
@@ -158,9 +158,9 @@ function churchsuite_handle_save()
 if (isset($_GET['status']) && $_GET['status'] == 'success') {
 ?>
 	<div id="message" class="updated notice is-dismissible">
-		<p><?php _e("Settings updated!", "churchsuite-api"); ?></p>
+		<p><?php _e("Settings updated!", "churchsuite_events_import"); ?></p>
 		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e("Dismiss this notice.", "churchsuite-api"); ?></span>
+			<span class="screen-reader-text"><?php _e("Dismiss this notice.", "churchsuite_events_import"); ?></span>
 		</button>
 	</div>
 <?php
@@ -240,14 +240,14 @@ function set_custom_edit_churchsuite_events_columns($columns)
 	unset($columns['title']);
 	unset($columns['date']);
 	unset($columns['comments']);
-	$columns['event_id'] = __('Event ID', 'danz-churchsuite-events');
-	$columns['event_identifier'] = __('Event Identifier', 'danz-churchsuite-events');
-	$columns['title'] = __('Event Name', 'danz-churchsuite-events');
-	$columns['event_date'] = __('Event Date', 'danz-churchsuite-events');
-	$columns['event_start'] = __('Event Start', 'danz-churchsuite-events');
-	$columns['event_end'] = __('Event End', 'danz-churchsuite-events');
-	$columns['event_cat_name'] = __('Event Category', 'danz-churchsuite-events');
-	$columns['event_cat_id'] = __('Event ID', 'danz-churchsuite-events');
+	$columns['event_id'] = __('Event ID', 'churchsuite_events_import');
+	$columns['event_identifier'] = __('Event Identifier', 'churchsuite_events_import');
+	$columns['title'] = __('Event Name', 'churchsuite_events_import');
+	$columns['event_date'] = __('Event Date', 'churchsuite_events_import');
+	$columns['event_start'] = __('Event Start', 'churchsuite_events_import');
+	$columns['event_end'] = __('Event End', 'churchsuite_events_import');
+	$columns['event_cat_name'] = __('Event Category', 'churchsuite_events_import');
+	$columns['event_cat_id'] = __('Event ID', 'churchsuite_events_import');
 
 
 	return $columns;
