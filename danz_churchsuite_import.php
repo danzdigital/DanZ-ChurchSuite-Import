@@ -7,7 +7,7 @@
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.0.2
+ * Version:           2.1.0
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -25,7 +25,7 @@ if (!function_exists('churchsuite_events')) {
 
 	// 	// Register ChurchSuites Events Posts
 	function churchsuite_events()
-	{
+{
 
 		$post_labels = array(
 			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
@@ -89,7 +89,7 @@ if (!function_exists('churchsuite_events')) {
 	add_action('init', 'churchsuite_events', 0);
 }
 // ChurchSuite Events Admin Dashboard
-
+/*
 add_action("admin_menu", "ChurchSuite_Events_Plugin_Menu");
 
 function ChurchSuite_Events_Plugin_Menu()
@@ -166,7 +166,7 @@ if (isset($_GET['status']) && $_GET['status'] == 'success') {
 		</button>
 	</div>
 <?php
-}
+}*/
 
 // ChurchSuite Import Events API
 
