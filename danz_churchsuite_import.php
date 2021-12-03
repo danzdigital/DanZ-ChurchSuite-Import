@@ -312,7 +312,7 @@ add_action('elementor/query/featured_events', function ($query) {
 	];
 	$query->set('meta_query', $meta_query);
 
-	$event_cat_id = $query->get('event_cat');
+	$event_cat_id = $query->get('event_cat_id');
 
 	// If there is no meta query when this filter runs, it should be initialized as an empty array.
 	if (!$event_cat_id) {
