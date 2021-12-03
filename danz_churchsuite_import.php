@@ -1,13 +1,21 @@
 <?php
 
 /**
+<<<<<<< Updated upstream
  * @since             2.1.1
+=======
+ * @since             2.1.2
+>>>>>>> Stashed changes
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
+<<<<<<< Updated upstream
  * Version:           2.1.1
+=======
+ * Version:           2.1.2
+>>>>>>> Stashed changes
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
