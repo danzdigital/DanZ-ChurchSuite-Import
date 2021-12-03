@@ -1,21 +1,13 @@
 <?php
 
 /**
-<<<<<<< Updated upstream
- * @since             2.1.1
-=======
- * @since             2.1.2
->>>>>>> Stashed changes
+ * @since             2.1.3
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
- * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
-<<<<<<< Updated upstream
- * Version:           2.1.1
-=======
- * Version:           2.1.2
->>>>>>> Stashed changes
+ * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
+ * Version:           2.1.3
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -209,7 +201,7 @@ function ChurchSuite_Import_Events()
 		// Create post object
 		$event_post = array(
 			'post_title'    => wp_strip_all_tags(ucwords($event_title)),
-			'post_content'  => $event_desciption,
+			'post_content'  => wp_strip_all_tags($event_desciption),
 			'post_status'   => 'publish',
 			'post_type' => 'churchsuite_events',
 			'import_id' => $event_id,
@@ -320,7 +312,7 @@ add_action('elementor/query/featured_events', function ($query) {
 	];
 	$query->set('meta_query', $meta_query);
 
-	$event_cat_id = $query->get('event_cat');
+	$event_cat_id = $query->get('event_cat_id');
 
 	// If there is no meta query when this filter runs, it should be initialized as an empty array.
 	if (!$event_cat_id) {
@@ -333,7 +325,7 @@ add_action('elementor/query/featured_events', function ($query) {
 		'value' => ['10', '8', '9', '7'],
 		'compare' => 'in',
 	];
-	$query->set('event_cat', $event_cat_id);
+	$query->set('event_cat_id', $event_cat_id);
 
 
 	$query->set('orderby', $meta_query);
