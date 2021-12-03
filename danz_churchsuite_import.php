@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.1.6
+ * @since             2.1.7
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.1.6
+ * Version:           2.1.7
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -298,6 +298,7 @@ add_filter('manage_edit-churchsuite_events_sortable_columns', function ($columns
 add_action('elementor/query/featured_events', function ($query) {
 	// Get current meta Query
 	$meta_query = $query->get('meta_query');
+	$date_query = $query->get('event_start');
 
 	// If there is no meta query when this filter runs, it should be initialized as an empty array.
 	if (!$meta_query) {
@@ -313,7 +314,7 @@ add_action('elementor/query/featured_events', function ($query) {
 	$query->set('meta_query', $meta_query);
 
 
-	$query->set( 'orderby', 'event_start' );
+	$query->set( 'orderby', $date_query );
 
 
 });
