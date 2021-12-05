@@ -7,7 +7,7 @@
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.1.1-dev2
+ * Version:           2.1.1-dev2.1
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -33,6 +33,12 @@ if (!function_exists('churchsuite_events')) {
 
 		function adminPage(){
 			add_options_page( 'ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
+		}
+
+		function adminPageHTML(){?>
+			Settings Page
+
+<?php
 		}
 
 	}
