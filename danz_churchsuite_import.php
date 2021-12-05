@@ -7,7 +7,7 @@
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.1.1-dev1.1
+ * Version:           2.1.1-dev2
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -21,7 +21,23 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
+
 if (!function_exists('churchsuite_events')) {
+
+	class ChurchSuiteEvents{
+
+		function __construct(){
+			add_action( 'admin_menu', array($this, 'adminPage') );
+			
+		}
+
+		function adminPage(){
+			add_options_page( 'ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
+		}
+
+	}
+
+$ChurchsuiteEvents = new ChurchSuiteEvents();
 
 	// 	// Register ChurchSuites Events Posts
 	function churchsuite_events()
@@ -157,16 +173,7 @@ function churchsuite_handle_save()
 
 
 
-if (isset($_GET['status']) && $_GET['status'] == 'success') {
-?>
-	<div id="message" class="updated notice is-dismissible">
-		<p><?php _e("Settings updated!", "churchsuite_events_import"); ?></p>
-		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e("Dismiss this notice.", "churchsuite_events_import"); ?></span>
-		</button>
-	</div>
-<?php
-}*/
+*/
 
 // ChurchSuite Import Events API
 
