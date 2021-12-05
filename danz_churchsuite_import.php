@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.1.1-dev1.1
+ * @since             2.1.1-dev2.1.1
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.1.1-dev2.1
+ * Version:           2.1.1-dev2.1.1
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -24,30 +24,33 @@ if (!defined('ABSPATH')) {
 
 if (!function_exists('churchsuite_events')) {
 
-	class ChurchSuiteEvents{
+	class ChurchSuiteEvents
+	{
 
-		function __construct(){
-			add_action( 'admin_menu', array($this, 'adminPage') );
-			
+		function __construct()
+		{
+			add_action('admin_menu', array($this, 'adminPage'));
 		}
 
-		function adminPage(){
-			add_options_page( 'ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
+		function adminPage()
+		{
+			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
 		}
 
-		function adminPageHTML(){?>
-			Settings Page
-
+		function adminPageHTML()
+		{ ?>
+			<div class="wrap">
+				<h1>ChurchSuite Events Settings</h1>
+			</div>
 <?php
 		}
-
 	}
 
-$ChurchsuiteEvents = new ChurchSuiteEvents();
+	$ChurchsuiteEvents = new ChurchSuiteEvents();
 
 	// 	// Register ChurchSuites Events Posts
 	function churchsuite_events()
-{
+	{
 
 		$post_labels = array(
 			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
