@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.3.5
+ * @since             2.3.6
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.3.5
+ * Version:           2.3.6
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -16,7 +16,6 @@
  * 
  */
 
-use function PHPSTORM_META\type;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -25,32 +24,29 @@ if (!defined('ABSPATH')) {
 
 if (!function_exists('churchsuite_events')) {
 
-	class ChurchSuiteEvents
-	{
-
 		function __construct()
 		{
-			add_action('admin_menu', array($this, 'adminPage'));
-			add_action( 'admin_init', array($this,'settings'));
+			add_action('admin_menu', array($this, 'cep_adminPage'));
+			add_action( 'admin_init', array($this,'cep_settings'));
 		}
 
-		function settings(){
+		function cep_settings(){
 			register_setting( 'churchsuiteeventsplugin', 'cep_accountid',array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Account ID') );
-			add_settings_field( 'cep_accountid', 'Account ID', array($this, 'accountIdHTML'), 'churchsuite-events-settings', 'cep_section' );
+			add_settings_field( 'cep_accountid', 'Account ID', array($this, 'cep_accountIdHTML'), 'churchsuite-events-settings', 'cep_section' );
 			add_settings_section( 'cep_section', null, null, 'churchsuite-events-settings' );
 		}
 
-		function accountIdHTML(){ ?>
+		function cep_accountIdHTML(){ ?>
 			<input type="text" name="cep_accountid" value="<?php echo esc_attr(get_option('cep_accountid')) ?>">
 
 		<?php }
 
-		function adminPage()
+		function cep_adminPage()
 		{
-			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
+			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'cep_adminPageHTML'));
 		}
 
-		function adminPageHTML()
+		function cep_adminPageHTML()
 		{ ?>
 			<div class="wrap">
 				<h1>ChurchSuite Events Settings</h1>
@@ -64,9 +60,8 @@ if (!function_exists('churchsuite_events')) {
 			</div>
 <?php
 		}
-	}
+	
 
-	$ChurchsuiteEvents = new ChurchSuiteEvents();
 
 	// 	// Register ChurchSuites Events Posts
 	function churchsuite_events()	{
