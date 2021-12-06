@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.3.2
+ * @since             2.3.3
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.3.2
+ * Version:           2.3.3
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -328,61 +328,3 @@ add_action('elementor/query/full_calendar', function ($query) {
 	$query->set('orderby', 'meta_value_num');
 	$query->set('order', 'ASC');
 });
-
-function get_delete_old_events()
-{
-
-	$past_query = date('Y-m-d', strtotime('-1 day'));
-
-	// Set our query arguments
-	$args = [
-		'fields'         => 'id', // Only get post ID's to improve performance
-		'post_type'      => 'churchsuite_events', // Post type
-		'posts_per_page' => -1,
-		'meta_query'     => [
-			[
-				'key'     => 'event_end', // Replace this with the event end date meta key.
-				'value'   => $past_query,
-				'compare' => '<='
-			]
-		]
-	];
-	$q = get_posts($args);
-
-	// Check if we have posts to delete, if not, return false
-	if (!$q)
-		return false;
-
-	// OK, we have posts to delete, lets delete them
-	foreach ($q as $id)
-		wp_delete_post($id);
-	delete_post_meta($id, 'event_start');
-	delete_post_meta($id, 'event_end');
-	delete_post_meta($id, 'event_date');
-	delete_post_meta($id, 'event_start_time');
-	delete_post_meta($id, 'event_end_time');
-	delete_post_meta($id, 'event_month');
-	delete_post_meta($id, 'event_id');
-	delete_post_meta($id, 'event_identifier');
-	delete_post_meta($id, 'event_featured');
-	delete_post_meta($id, 'event_cat_id');
-	delete_post_meta($id, 'event_cat_name');
-	delete_post_meta($id, 'event_tickets');
-	delete_post_meta($id, 'event_tickets_url');
-	delete_post_meta($id, 'event_featured_image_URL');
-}
-
-// expired_post_delete hook fires when the Cron is executed
-add_action('old_event_delete', 'get_delete_old_events');
-
-// Add function to register event to wp
-add_action('wp', 'register_daily_events_delete_event');
-
-function register_daily_events_delete_event()
-{
-	// Make sure this event hasn't been scheduled
-	if (!wp_next_scheduled('old_event_delete')) {
-		// Schedule the event
-		wp_schedule_event(time(), 'daily', 'old_event_delete');
-	}
-}
