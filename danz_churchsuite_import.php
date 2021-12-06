@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.3.3
+ * @since             2.3.4
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.3.3
+ * Version:           2.3.4
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -31,18 +31,16 @@ if (!function_exists('churchsuite_events')) {
 		function __construct()
 		{
 			add_action('admin_menu', array($this, 'adminPage'));
-			add_action('admin_init', array($this, 'settings'));
+			add_action( 'admin_init', array($this,'settings'));
 		}
 
-		function settings()
-		{
-			register_setting('churchsuiteeventsplugin', 'cep_accountid', array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Account ID'));
-			add_settings_field('cep_accountid', 'Account ID', array($this, 'accountIdHTML'), 'churchsuite-events-settings', 'cep_section');
-			add_settings_section('cep_section', null, null, 'churchsuite-events-settings');
+		function settings(){
+			register_setting( 'churchsuiteeventsplugin', 'cep_accountid',array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Account ID') );
+			add_settings_field( 'cep_accountid', 'Account ID', array($this, 'accountIdHTML'), 'churchsuite-events-settings', 'cep_section' );
+			add_settings_section( 'cep_section', null, null, 'churchsuite-events-settings' );
 		}
 
-		function accountIdHTML()
-		{ ?>
+		function accountIdHTML(){ ?>
 			<input type="text" name="cep_accountid" value="<?php echo esc_attr(get_option('cep_accountid')) ?>">
 
 		<?php }
@@ -57,12 +55,11 @@ if (!function_exists('churchsuite_events')) {
 			<div class="wrap">
 				<h1>ChurchSuite Events Settings</h1>
 				<form action="options.php" method="post">
-					<?php
-					settings_fields('churchsuiteeventsplugin');
-					do_settings_sections('churchsuite-events-settings');
-					submit_button();
-					?>
-					<p>Current ChurchSuite Account URL: <a href="https://<?php echo get_option('cep_accountid') ?>.churchsuite.co.uk">https://<?php echo get_option('cep_accountid') ?>.churchsuite.co.uk</a></p>
+				<?php
+				settings_fields( 'churchsuiteeventsplugin' );
+				do_settings_sections( 'churchsuite-events-settings' );
+				submit_button( );
+				?>
 				</form>
 			</div>
 <?php
@@ -72,8 +69,7 @@ if (!function_exists('churchsuite_events')) {
 	$ChurchsuiteEvents = new ChurchSuiteEvents();
 
 	// 	// Register ChurchSuites Events Posts
-	function churchsuite_events()
-	{
+	function churchsuite_events()	{
 
 		$post_labels = array(
 			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
@@ -139,10 +135,9 @@ if (!function_exists('churchsuite_events')) {
 
 // ChurchSuite Import Events API
 
-function ChurchSuite_Import_Events()
-{
+function ChurchSuite_Import_Events(){
 
-	$response = wp_remote_get('https://' . get_option('cep_accountid') . '.churchsuite.co.uk/embed/calendar/json');
+	$response = wp_remote_get('https://invernesscatherdral.churchsuite.co.uk/embed/calendar/json');
 	$body     = wp_remote_retrieve_body($response);
 
 	$events = json_decode($body);
@@ -163,12 +158,12 @@ function ChurchSuite_Import_Events()
 		$event_created = $event->ctime;
 		$event_modified = $event->mtime;
 		$clean_event_start = strtotime($event_start);
-		$clean2_event_start = date('Y-m-d', $clean_event_start);
-		$time_event_start = date('H:i', $clean_event_start);
+		$clean2_event_start = date('Y-m-d',$clean_event_start);
+		$time_event_start = date('H:i',$clean_event_start);
 		$clean_event_end = strtotime($event_end);
-		$clean2_event_end = date('Y-m-d', $clean_event_end);
-		$event_month = date('F y', $clean_event_start);
-		$time_event_end = date('H:i', $clean_event_end);
+		$clean2_event_end = date('Y-m-d',$clean_event_end);
+		$event_month = date('F y',$clean_event_start);
+		$time_event_end = date('H:i',$clean_event_end);
 		$event_date = date('j M', $clean_event_start) . ' - ' . date('j M y', $clean_event_end);
 
 		// Create post object
@@ -198,7 +193,7 @@ function ChurchSuite_Import_Events()
 				'event_featured_image_URL' => $event_featured_image,
 			),
 		);
-
+		
 
 		$content = get_post($event_id);
 
@@ -214,8 +209,7 @@ add_action('init', 'ChurchSuite_Import_Events');
 
 // Add the custom columns to the ChurchSuite Event post type:
 add_filter('manage_churchsuite_events_posts_columns', 'set_custom_edit_churchsuite_events_columns');
-function set_custom_edit_churchsuite_events_columns($columns)
-{
+function set_custom_edit_churchsuite_events_columns($columns){
 	unset($columns['title']);
 	unset($columns['date']);
 	unset($columns['comments']);
@@ -237,8 +231,7 @@ function set_custom_edit_churchsuite_events_columns($columns)
 
 // Add the data to the custom columns for the ChurchSuite Event post type:
 add_action('manage_churchsuite_events_posts_custom_column', 'custom_churchsuite_events_column', 10, 2);
-function custom_churchsuite_events_column($column, $post_id)
-{
+function custom_churchsuite_events_column($column, $post_id){
 	switch ($column) {
 
 		case 'event_id':
@@ -300,8 +293,8 @@ add_action('elementor/query/featured_events', function ($query) {
 	];
 	$query->set('meta_query', $meta_query);
 
-	$query->set('orderby', 'event_end');
-	$query->set('meta_key', 'event_end');
+	$query->set('orderby', 'event_end');	
+	$query->set('meta_key', 'event_end');	 
 	$query->set('order', 'ASC');
 });
 
@@ -309,10 +302,10 @@ add_action('elementor/query/featured_events', function ($query) {
 add_action('elementor/query/full_calendar', function ($query) {
 	$today = date("Y-m-d");
 
-	$meta_query = $query->get('meta_query');
+	$meta_query = $query->get( 'meta_query' );
 
 	// If there is no meta query when this filter runs, it should be initialized as an empty array.
-	if (!$meta_query) {
+	if ( ! $meta_query ) {
 		$meta_query = [];
 	}
 
@@ -322,9 +315,11 @@ add_action('elementor/query/full_calendar', function ($query) {
 		'value' => $today,
 		'compare' => '=',
 	];
-	$query->set('meta_query', $meta_query);
+	$query->set( 'meta_query', $meta_query );
 
-	$query->set('meta_key', 'event_start_time');
-	$query->set('orderby', 'meta_value_num');
-	$query->set('order', 'ASC');
+	$query->set( 'meta_key', 'event_start_time' );
+	$query->set( 'orderby', 'meta_value_num' );
+	$query->set( 'order', 'ASC' );
+
 });
+
