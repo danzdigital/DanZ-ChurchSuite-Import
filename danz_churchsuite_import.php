@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.3.0
+ * @since             2.3.1
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.3.0
+ * Version:           2.3.1
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -379,3 +379,46 @@ function register_daily_events_delete_event() {
         wp_schedule_event( time(), 'daily', 'old_event_delete' );
     }
 }
+
+/**
+ * Deactivation hook.
+ */
+function churchsuite_events_deactivate() {
+    // Unregister the post type, so the rules are no longer in memory.
+    unregister_post_type( 'churchsuite_events' );
+	
+    // Set our query arguments
+    $args = [
+        'fields'         => 'ids', // Only get post ID's to improve performance
+        'post_type'      => 'churchsuite_events', // Post type
+        'posts_per_page' => -1,
+	];
+      
+    $q = get_posts( $args );
+
+    // Check if we have posts to delete, if not, return false
+    if ( !$q )
+        return false;
+
+    // OK, we have posts to delete, lets delete them
+    foreach ( $q as $id )
+		wp_delete_post($id);
+		delete_post_meta($id,'event_start' );
+		delete_post_meta($id,'event_end' );
+		delete_post_meta($id,'event_date' );
+		delete_post_meta($id,'event_start_time' );
+		delete_post_meta($id,'event_end_time' );
+		delete_post_meta($id,'event_month' );
+		delete_post_meta($id,'event_id' );
+		delete_post_meta($id,'event_identifier' );
+		delete_post_meta($id,'event_featured' );
+		delete_post_meta($id,'event_cat_id' );
+		delete_post_meta($id,'event_cat_name' );
+		delete_post_meta($id,'event_tickets' );
+		delete_post_meta($id,'event_tickets_url' );
+		delete_post_meta($id,'event_featured_image_URL' );
+
+    // Clear the permalinks to remove our post type's rules from the database.
+    flush_rewrite_rules();
+}
+register_deactivation_hook( __FILE__, 'pluginprefix_deactivate' );
