@@ -86,7 +86,6 @@ if (!function_exists('churchsuite_events')) {
 		register_post_type('churchsuite_events', $post_args);
 	};
 	add_action('init', 'churchsuite_events', 0);
-}
 
 // ChurchSuite Import Events API
 
@@ -278,3 +277,4 @@ add_action('elementor/query/full_calendar', function ($query) {
 
 });
 
+}
