@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.1.7
+ * @since             2.3.0
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.1.7
+ * Version:           2.3.0
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -16,16 +16,61 @@
  * 
  */
 
+use function PHPSTORM_META\type;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
+
 if (!function_exists('churchsuite_events')) {
 
+	class ChurchSuiteEvents
+	{
+
+		function __construct()
+		{
+			add_action('admin_menu', array($this, 'adminPage'));
+			add_action( 'admin_init', array($this,'settings'));
+		}
+
+		function settings(){
+			register_setting( 'churchsuiteeventsplugin', 'cep_accountid',array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Account ID') );
+			add_settings_field( 'cep_accountid', 'Account ID', array($this, 'accountIdHTML'), 'churchsuite-events-settings', 'cep_section' );
+			add_settings_section( 'cep_section', null, null, 'churchsuite-events-settings' );
+		}
+
+		function accountIdHTML(){ ?>
+			<input type="text" name="cep_accountid" value="<?php echo esc_attr(get_option('cep_accountid')) ?>">
+
+		<?php }
+
+		function adminPage()
+		{
+			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'adminPageHTML'));
+		}
+
+		function adminPageHTML()
+		{ ?>
+			<div class="wrap">
+				<h1>ChurchSuite Events Settings</h1>
+				<form action="options.php" method="post">
+				<?php
+				settings_fields( 'churchsuiteeventsplugin' );
+				do_settings_sections( 'churchsuite-events-settings' );
+				submit_button( );
+				?>
+				<p>Current ChurchSuite Account URL: <a href="https://<?php echo get_option( 'cep_accountid')?>.churchsuite.co.uk">https://<?php echo get_option( 'cep_accountid')?>.churchsuite.co.uk</a></p>
+				</form>
+			</div>
+<?php
+		}
+	}
+
+	$ChurchsuiteEvents = new ChurchSuiteEvents();
+
 	// 	// Register ChurchSuites Events Posts
-	function churchsuite_events()
-{
+	function churchsuite_events()	{
 
 		$post_labels = array(
 			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
@@ -88,93 +133,12 @@ if (!function_exists('churchsuite_events')) {
 	};
 	add_action('init', 'churchsuite_events', 0);
 }
-// ChurchSuite Events Admin Dashboard
-/*
-add_action("admin_menu", "ChurchSuite_Events_Plugin_Menu");
-
-function ChurchSuite_Events_Plugin_Menu()
-{
-	add_submenu_page(
-		"options-general.php",  // Which menu parent
-		"ChurchSuite Events",            // Page title
-		"ChurchSuite Events",            // Menu title
-		"manage_options",       // Minimum capability (manage_options is an easy way to target administrators)
-		"churchsuite",            // Menu slug
-		"ChurchSuite_Events_Plugin_Options"     // Callback that prints the markup
-	);
-}
-
-function ChurchSuite_Events_Plugin_Options()
-{
-	if (!current_user_can("manage_options")) {
-		wp_die(__("You do not have sufficient permissions to access this page."));
-	}
-?>
-	<form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
-
-		<input type="hidden" name="action" value="update_churchsuite_settings" />
-
-		<h3><?php _e("ChurchSuite ChurchSuite Events Info", "churchsuite_events_import"); ?></h3>
-		<p>
-			<label><?php _e("ChurchSuite Account ID:", "churchsuite_events_import"); ?></label>
-			<input class="" type="text" name="cs_acc_id" value="<?php echo get_option('cs_acc_id'); ?>" />
-		</p>
-		<input class="button button-primary" type="submit" value="<?php _e("Save", "churchsuite_events_import"); ?>" />
-
-	</form>
-
-	<div class="churchsuite_info" style="margin-top: 20px;">
-		<p>
-			<?php
-			_e("Current ChurchSuite URL: https://", "churchsuite_events_import");
-			echo get_option("cs_acc_id");
-			_e(".churchsuite.co.uk/embed/calendar/json", "churchsuite_events_import");
-			?>
-		</p>
-	</div>
-
-<?php
-
-	add_action('admin_post_update_churchsuite_settings', 'churchsuite_handle_save');
-}
-
-function churchsuite_handle_save()
-{
-
-	// Get the options that were sent
-	$url = (!empty($_POST["cs_acc_id"])) ? $_POST["cs_acc_id"] : NULL;
-
-	// Validation would go here
-
-	// Update the values
-	update_option("cs_acc_id", $url, TRUE);
-
-	// Redirect back to settings page
-	$redirect_url = get_bloginfo("url") . "/wp-admin/options-general.php?page=churchsuite&status=success";
-	header("Location: " . $redirect_url);
-	exit;
-}
-
-
-
-if (isset($_GET['status']) && $_GET['status'] == 'success') {
-?>
-	<div id="message" class="updated notice is-dismissible">
-		<p><?php _e("Settings updated!", "churchsuite_events_import"); ?></p>
-		<button type="button" class="notice-dismiss">
-			<span class="screen-reader-text"><?php _e("Dismiss this notice.", "churchsuite_events_import"); ?></span>
-		</button>
-	</div>
-<?php
-}*/
 
 // ChurchSuite Import Events API
 
-function ChurchSuite_Import_Events()
-{
+function ChurchSuite_Import_Events(){
 
-	$response = wp_remote_get('https://invernesscathedral.churchsuite.co.uk/embed/calendar/json');
-	// $response = wp_remote_get('https://' . get_option('cs_acc_id') . '.churchsuite.co.uk/embed/calendar/json');
+	$response = wp_remote_get('https://'. get_option( 'cep_accountid') . '.churchsuite.co.uk/embed/calendar/json');
 	$body     = wp_remote_retrieve_body($response);
 
 	$events = json_decode($body);
@@ -195,13 +159,18 @@ function ChurchSuite_Import_Events()
 		$event_created = $event->ctime;
 		$event_modified = $event->mtime;
 		$clean_event_start = strtotime($event_start);
+		$clean2_event_start = date('Y-m-d',$clean_event_start);
+		$time_event_start = date('H:i',$clean_event_start);
 		$clean_event_end = strtotime($event_end);
+		$clean2_event_end = date('Y-m-d',$clean_event_end);
+		$event_month = date('F y',$clean_event_start);
+		$time_event_end = date('H:i',$clean_event_end);
 		$event_date = date('j M', $clean_event_start) . ' - ' . date('j M y', $clean_event_end);
 
 		// Create post object
 		$event_post = array(
 			'post_title'    => wp_strip_all_tags(ucwords($event_title)),
-			'post_content'  => wp_strip_all_tags($event_desciption),
+			'post_content'  => $event_desciption,
 			'post_status'   => 'publish',
 			'post_type' => 'churchsuite_events',
 			'import_id' => $event_id,
@@ -209,9 +178,12 @@ function ChurchSuite_Import_Events()
 			'post_modified' => $event_modified,
 			'post_author'   => 10,
 			'meta_input'   => array(
-				'event_start' => $event_start,
-				'event_end' => $event_end,
+				'event_start' => $clean2_event_start,
+				'event_end' => $clean2_event_end,
 				'event_date' => $event_date,
+				'event_start_time' => $time_event_start,
+				'event_end_time' => $time_event_end,
+				'event_month' => $event_month,
 				'event_id' => $event_id,
 				'event_identifier' => $event_identifier,
 				'event_featured' => $event_featured,
@@ -222,7 +194,7 @@ function ChurchSuite_Import_Events()
 				'event_featured_image_URL' => $event_featured_image,
 			),
 		);
-
+		
 
 		$content = get_post($event_id);
 
@@ -238,8 +210,7 @@ add_action('init', 'ChurchSuite_Import_Events');
 
 // Add the custom columns to the ChurchSuite Event post type:
 add_filter('manage_churchsuite_events_posts_columns', 'set_custom_edit_churchsuite_events_columns');
-function set_custom_edit_churchsuite_events_columns($columns)
-{
+function set_custom_edit_churchsuite_events_columns($columns){
 	unset($columns['title']);
 	unset($columns['date']);
 	unset($columns['comments']);
@@ -249,6 +220,9 @@ function set_custom_edit_churchsuite_events_columns($columns)
 	$columns['event_date'] = __('Event Date', 'churchsuite_events_import');
 	$columns['event_start'] = __('Event Start', 'churchsuite_events_import');
 	$columns['event_end'] = __('Event End', 'churchsuite_events_import');
+	$columns['event_month'] = __('Event Month', 'churchsuite_events_import');
+	$columns['event_start_time'] = __('Event Start Time', 'churchsuite_events_import');
+	$columns['event_end_time'] = __('Event End Start', 'churchsuite_events_import');
 	$columns['event_cat_name'] = __('Event Category', 'churchsuite_events_import');
 	$columns['event_cat_id'] = __('Event ID', 'churchsuite_events_import');
 
@@ -258,8 +232,7 @@ function set_custom_edit_churchsuite_events_columns($columns)
 
 // Add the data to the custom columns for the ChurchSuite Event post type:
 add_action('manage_churchsuite_events_posts_custom_column', 'custom_churchsuite_events_column', 10, 2);
-function custom_churchsuite_events_column($column, $post_id)
-{
+function custom_churchsuite_events_column($column, $post_id){
 	switch ($column) {
 
 		case 'event_id':
@@ -283,6 +256,15 @@ function custom_churchsuite_events_column($column, $post_id)
 		case 'event_cat_id':
 			echo get_post_meta($post_id, 'event_cat_id', true);
 			break;
+		case 'event_start_time':
+			echo get_post_meta($post_id, 'event_start_time', true);
+			break;
+		case 'event_end_time':
+			echo get_post_meta($post_id, 'event_end_time', true);
+			break;
+		case 'event_month':
+			echo get_post_meta($post_id, 'event_month', true);
+			break;
 	}
 }
 
@@ -298,7 +280,6 @@ add_filter('manage_edit-churchsuite_events_sortable_columns', function ($columns
 add_action('elementor/query/featured_events', function ($query) {
 	// Get current meta Query
 	$meta_query = $query->get('meta_query');
-	$date_query = $query->get('event_start');
 
 	// If there is no meta query when this filter runs, it should be initialized as an empty array.
 	if (!$meta_query) {
@@ -313,8 +294,88 @@ add_action('elementor/query/featured_events', function ($query) {
 	];
 	$query->set('meta_query', $meta_query);
 
+	$query->set('orderby', 'event_end');	
+	$query->set('meta_key', 'event_end');	 
+	$query->set('order', 'ASC');
+});
 
-	$query->set( 'orderby', $date_query );
+// Showing post with meta key filter in Portfolio Widget
+add_action('elementor/query/full_calendar', function ($query) {
+	$today = date("Y-m-d");
 
+	$meta_query = $query->get( 'meta_query' );
+
+	// If there is no meta query when this filter runs, it should be initialized as an empty array.
+	if ( ! $meta_query ) {
+		$meta_query = [];
+	}
+
+	// Append our meta query
+	$meta_query[] = [
+		'key' => 'event_start',
+		'value' => $today,
+		'compare' => '=',
+	];
+	$query->set( 'meta_query', $meta_query );
+
+	$query->set( 'meta_key', 'event_start_time' );
+	$query->set( 'orderby', 'meta_value_num' );
+	$query->set( 'order', 'ASC' );
 
 });
+
+function get_delete_old_events() {
+
+    $past_query = date('Y-m-d', strtotime('-1 day'));
+
+    // Set our query arguments
+    $args = [
+        'fields'         => 'ids', // Only get post ID's to improve performance
+        'post_type'      => 'churchsuite_events', // Post type
+        'posts_per_page' => -1,
+        'meta_query'     => [
+            [
+                'key'     => 'event_end', // Replace this with the event end date meta key.
+                'value'   => $past_query,
+                'compare' => '<='
+            ]
+        ]
+      ];
+    $q = get_posts( $args );
+
+    // Check if we have posts to delete, if not, return false
+    if ( !$q )
+        return false;
+
+    // OK, we have posts to delete, lets delete them
+    foreach ( $q as $id )
+		wp_delete_post($id);
+		delete_post_meta($id,'event_start' );
+		delete_post_meta($id,'event_end' );
+		delete_post_meta($id,'event_date' );
+		delete_post_meta($id,'event_start_time' );
+		delete_post_meta($id,'event_end_time' );
+		delete_post_meta($id,'event_month' );
+		delete_post_meta($id,'event_id' );
+		delete_post_meta($id,'event_identifier' );
+		delete_post_meta($id,'event_featured' );
+		delete_post_meta($id,'event_cat_id' );
+		delete_post_meta($id,'event_cat_name' );
+		delete_post_meta($id,'event_tickets' );
+		delete_post_meta($id,'event_tickets_url' );
+		delete_post_meta($id,'event_featured_image_URL' );
+}
+
+// expired_post_delete hook fires when the Cron is executed
+add_action( 'old_event_delete', 'get_delete_old_events' );
+
+// Add function to register event to wp
+add_action( 'wp', 'register_daily_events_delete_event');
+
+function register_daily_events_delete_event() {
+    // Make sure this event hasn't been scheduled
+    if( !wp_next_scheduled( 'old_event_delete' ) ) {
+        // Schedule the event
+        wp_schedule_event( time(), 'daily', 'old_event_delete' );
+    }
+}
