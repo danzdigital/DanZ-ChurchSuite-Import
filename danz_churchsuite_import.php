@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.3.7
+ * @since             2.3.8
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.3.7
+ * Version:           2.3.8
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -26,7 +26,7 @@ if (!function_exists('churchsuite_events')) {
 
 		function cep_settings(){
 			register_setting( 'churchsuiteeventsplugin', 'cep_accountid',array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Account ID') );
-			add_settings_field( 'cep_accountid', 'Account ID', array($this, 'cep_accountIdHTML'), 'churchsuite-events-settings', 'cep_section' );
+			add_settings_field( 'cep_accountid', 'Account ID', 'cep_accountIdHTML', 'churchsuite-events-settings', 'cep_section' );
 			add_settings_section( 'cep_section', null, null, 'churchsuite-events-settings' );
 		}
 
@@ -37,7 +37,7 @@ if (!function_exists('churchsuite_events')) {
 
 		function cep_adminPage()
 		{
-			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', array($this, 'cep_adminPageHTML'));
+			add_options_page('ChurchSuite Events Settings', 'ChurchSuite Settings', 'manage_options', 'churchsuite-events-settings', 'cep_adminPageHTML');
 		}
 
 		function cep_adminPageHTML()
@@ -54,8 +54,8 @@ if (!function_exists('churchsuite_events')) {
 			</div>
 <?php
 		}
-		add_action('admin_menu', array($this, 'cep_adminPage'));
-		add_action( 'admin_init', array($this,'cep_settings'));
+		add_action('admin_menu', 'cep_adminPage');
+		add_action( 'admin_init', 'cep_settings');
 
 
 	// Register ChurchSuites Events Posts
