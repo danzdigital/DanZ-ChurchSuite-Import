@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.5.3
+ * @since             2.5.4
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.5.3
+ * Version:           2.5.4
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -302,18 +302,7 @@ if (!function_exists('churchsuite_events')) {
 					set_post_thumbnail($event_id, $attachments[0]->ID);
 				}
 			} else {
-				wp_insert_post($event_post);
-
-				// load the image
-				$result = media_sideload_image($event_featured_image, $event_id);
-
-				// then find the last image added to the post attachments
-				$attachments = get_posts(array('numberposts' => '1', 'post_parent' => $event_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
-
-				if (sizeof($attachments) > 0) {
-					// set image as the post thumbnail
-					set_post_thumbnail($event_id, $attachments[0]->ID);
-				}
+				
 			}
 		}
 	}
