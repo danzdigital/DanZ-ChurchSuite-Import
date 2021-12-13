@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @since             2.5.7
+ * @since             2.5.8
  * @package           churchsuite_events_import
  *
  * @wordpress-plugin
  * Plugin Name:       ChurchSuite Events Import
  * Description:       This plugin imports ChurchSuite Events into the ChurchSuite Events Post Type.
- * Version:           2.5.7
+ * Version:           2.5.8
  * Author:            DanZ Digital Designs
  * Author URI:        https://danzdigitaldesigns.co.uk
  * Text Domain:       churchsuite-events-import
@@ -15,6 +15,10 @@
  * Primary Branch: main
  * 
  */
+// required libraries for media_sideload_image
+require_once(ABSPATH . 'wp-admin/includes/file.php');
+require_once(ABSPATH . 'wp-admin/includes/media.php');
+require_once(ABSPATH . 'wp-admin/includes/image.php');
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -29,6 +33,8 @@ if (!function_exists('churchsuite_events')) {
 		{
 			add_action('admin_menu', array($this, 'adminPage'));
 			add_action('admin_init', array($this, 'settings'));
+			add_action('init', array($this, 'eventsPost'), 0);
+			add_action('init', array($this, 'eventsCatTerms'), 0);
 		}
 
 		function settings()
@@ -63,171 +69,126 @@ if (!function_exists('churchsuite_events')) {
 			</div>
 <?php
 		}
+
+		// Register ChurchSuites Events Posts
+		function eventsPost()
+		{
+
+			$post_labels = array(
+				'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
+				'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events_import'),
+				'menu_name'             => __('ChurchSuite Events', 'churchsuite_events_import'),
+				'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events_import'),
+				'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events_import'),
+				'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events_import'),
+				'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events_import'),
+				'all_items'             => __('All ChurchSuite Events', 'churchsuite_events_import'),
+				'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events_import'),
+				'add_new'               => __('Add New', 'churchsuite_events_import'),
+				'new_item'              => __('New ChurchSuite Event', 'churchsuite_events_import'),
+				'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events_import'),
+				'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events_import'),
+				'view_item'             => __('View ChurchSuite Event', 'churchsuite_events_import'),
+				'view_items'            => __('View ChurchSuite Events', 'churchsuite_events_import'),
+				'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events_import'),
+				'not_found'             => __('Not found', 'churchsuite_events_import'),
+				'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events_import'),
+				'featured_image'        => __('Featured Image', 'churchsuite_events_import'),
+				'set_featured_image'    => __('Set featured image', 'churchsuite_events_import'),
+				'remove_featured_image' => __('Remove featured image', 'churchsuite_events_import'),
+				'use_featured_image'    => __('Use as featured image', 'churchsuite_events_import'),
+				'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events_import'),
+				'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events_import'),
+				'items_list'            => __('ChurchSuite Events list', 'churchsuite_events_import'),
+				'items_list_navigation' => __('Items list navigation', 'churchsuite_events_import'),
+				'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events_import'),
+			);
+			$rewrite = array(
+				'slug' => 'event',
+				'with_front' => true,
+				'pages' => true,
+				'feeds' => true,
+			);
+			$post_args = array(
+				'label'                 => __('ChurchSuite Event', 'churchsuite_events_import'),
+				'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events_import'),
+				'labels'                => $post_labels,
+				'supports'              => array('title', 'editor', 'thumbnail', 'comments', 'custom-fields'),
+				'hierarchical'          => false,
+				'public'                => true,
+				'show_ui'               => true,
+				'show_in_menu'          => true,
+				'menu_position'         => 5,
+				'menu_icon'             => 'dashicons-calendar-alt',
+				'show_in_admin_bar'     => true,
+				'show_in_nav_menus'     => true,
+				'can_export'            => true,
+				'has_archive'           => true,
+				'exclude_from_search'   => false,
+				'publicly_queryable'    => true,
+				'capability_type'       => 'post',
+				'show_in_rest'          => true,
+				'rest_base'             => 'churchsuite_event',
+				'rewrite' => $rewrite
+			);
+			register_post_type('churchsuite_events', $post_args);
+		}
+
+		// Register Custom Taxonomy
+		function eventsCatTerms()
+		{
+
+			$labels = array(
+				'name'                       => _x('Event Categories', 'Taxonomy General Name', 'churchsuite_events_import'),
+				'singular_name'              => _x('Event Category', 'Taxonomy Singular Name', 'churchsuite_events_import'),
+				'menu_name'                  => __('Event Categories', 'churchsuite_events_import'),
+				'all_items'                  => __('All Categories', 'churchsuite_events_import'),
+				'parent_item'                => __('Parent Category', 'churchsuite_events_import'),
+				'parent_item_colon'          => __('Parent Category:', 'churchsuite_events_import'),
+				'new_item_name'              => __('New Category', 'churchsuite_events_import'),
+				'add_new_item'               => __('Add New Category', 'churchsuite_events_import'),
+				'edit_item'                  => __('Edit Category', 'churchsuite_events_import'),
+				'update_item'                => __('Update Category', 'churchsuite_events_import'),
+				'view_item'                  => __('View Category', 'churchsuite_events_import'),
+				'separate_items_with_commas' => __('Separate Categories with commas', 'churchsuite_events_import'),
+				'add_or_remove_items'        => __('Add or remove Categories', 'churchsuite_events_import'),
+				'choose_from_most_used'      => __('Choose from the most used', 'churchsuite_events_import'),
+				'popular_items'              => __('Popular Categories', 'churchsuite_events_import'),
+				'search_items'               => __('Search Categories', 'churchsuite_events_import'),
+				'not_found'                  => __('Not Found', 'churchsuite_events_import'),
+				'no_terms'                   => __('No Categories', 'churchsuite_events_import'),
+				'items_list'                 => __('Categories list', 'churchsuite_events_import'),
+				'items_list_navigation'      => __('Categories list navigation', 'churchsuite_events_import'),
+			);
+			$rewrite = array(
+				'slug'                       => 'category',
+				'with_front'                 => true,
+				'hierarchical'               => false,
+			);
+			$args = array(
+				'labels'                     => $labels,
+				'hierarchical'               => false,
+				'public'                     => true,
+				'show_ui'                    => true,
+				'show_admin_column'          => true,
+				'show_in_nav_menus'          => true,
+				'show_tagcloud'              => false,
+				'query_var'                  => 'category',
+				'rewrite'                    => $rewrite,
+				'show_in_rest'               => true,
+				'rest_base'                  => 'category',
+			);
+			register_taxonomy('eventcat', array('churchsuite_events'), $args);
+		}
 	}
 
 	$ChurchsuiteEvents = new ChurchSuiteEvents();
 
 
-	// Register ChurchSuites Events Posts
-	function churchsuite_events()
-	{
-
-		$post_labels = array(
-			'name'                  => __('ChurchSuite Events', 'Post Type General Name', 'churchsuite_events_import'),
-			'singular_name'         => __('ChurchSuite Event', 'Post Type Singular Name', 'churchsuite_events_import'),
-			'menu_name'             => __('ChurchSuite Events', 'churchsuite_events_import'),
-			'name_admin_bar'        => __('ChurchSuite Events', 'churchsuite_events_import'),
-			'archives'              => __('ChurchSuite Event Archives', 'churchsuite_events_import'),
-			'attributes'            => __('ChurchSuite Event Attributes', 'churchsuite_events_import'),
-			'parent_item_colon'     => __('ChurchSuite Event:', 'churchsuite_events_import'),
-			'all_items'             => __('All ChurchSuite Events', 'churchsuite_events_import'),
-			'add_new_item'          => __('Add New ChurchSuite Event', 'churchsuite_events_import'),
-			'add_new'               => __('Add New', 'churchsuite_events_import'),
-			'new_item'              => __('New ChurchSuite Event', 'churchsuite_events_import'),
-			'edit_item'             => __('Edit ChurchSuite Event', 'churchsuite_events_import'),
-			'update_item'           => __('Update ChurchSuite Event', 'churchsuite_events_import'),
-			'view_item'             => __('View ChurchSuite Event', 'churchsuite_events_import'),
-			'view_items'            => __('View ChurchSuite Events', 'churchsuite_events_import'),
-			'search_items'          => __('Search ChurchSuite Event', 'churchsuite_events_import'),
-			'not_found'             => __('Not found', 'churchsuite_events_import'),
-			'not_found_in_trash'    => __('Not found in Trash', 'churchsuite_events_import'),
-			'featured_image'        => __('Featured Image', 'churchsuite_events_import'),
-			'set_featured_image'    => __('Set featured image', 'churchsuite_events_import'),
-			'remove_featured_image' => __('Remove featured image', 'churchsuite_events_import'),
-			'use_featured_image'    => __('Use as featured image', 'churchsuite_events_import'),
-			'insert_into_item'      => __('Insert into ChurchSuite Event', 'churchsuite_events_import'),
-			'uploaded_to_this_item' => __('Uploaded to this ChurchSuite Event', 'churchsuite_events_import'),
-			'items_list'            => __('ChurchSuite Events list', 'churchsuite_events_import'),
-			'items_list_navigation' => __('Items list navigation', 'churchsuite_events_import'),
-			'filter_items_list'     => __('Filter ChurchSuite Events', 'churchsuite_events_import'),
-		);
-		$rewrite = array(
-			'slug' => 'event',
-			'with_front' => true,
-			'pages' => true,
-			'feeds' => true,
-		);
-		$post_args = array(
-			'label'                 => __('ChurchSuite Event', 'churchsuite_events_import'),
-			'description'           => __('All ChurchSuite Events imported from API', 'churchsuite_events_import'),
-			'labels'                => $post_labels,
-			'supports'              => array('title', 'editor', 'thumbnail', 'comments', 'custom-fields'),
-			'hierarchical'          => false,
-			'public'                => true,
-			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 5,
-			'menu_icon'             => 'dashicons-calendar-alt',
-			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
-			'can_export'            => true,
-			'has_archive'           => true,
-			'exclude_from_search'   => false,
-			'publicly_queryable'    => true,
-			'capability_type'       => 'post',
-			'show_in_rest'          => true,
-			'rest_base'             => 'churchsuite_event',
-			'rewrite' => $rewrite
-		);
-		register_post_type('churchsuite_events', $post_args);
-	};
-	add_action('init', 'churchsuite_events', 0);
 
 	// ChurchSuite Import Events API
 
 	function ChurchSuite_Import_Events()
-	{
-
-		$response = wp_remote_get('https://' . get_option('cep_accountid') . '.churchsuite.co.uk/embed/calendar/json');
-		$body     = wp_remote_retrieve_body($response);
-
-		$events = json_decode($body);
-
-		foreach ((array)$events as $event) {
-			$event_title = $event->name;
-			$event_id = $event->id;
-			$event_featured_image = $event->images->square_100;
-			$event_identifier = $event->identifier;
-			$event_desciption = $event->description;
-			$event_start = $event->datetime_start;
-			$event_end = $event->datetime_end;
-			$event_cat_name = $event->category->name;
-			$event_cat_id = $event->category->id;
-			$event_featured = $event->signup_options->public->featured;
-			$event_tickets = $event->signup_options->tickets->enabled;
-			$event_tickets_url = $event->signup_options->tickets->url;
-			$event_created = $event->ctime;
-			$event_modified = $event->mtime;
-			$clean_event_start = strtotime($event_start);
-			$clean2_event_start = date('Y-m-d', $clean_event_start);
-			$time_event_start = date('H:i', $clean_event_start);
-			$clean_event_end = strtotime($event_end);
-			$clean2_event_end = date('Y-m-d', $clean_event_end);
-			$event_month = date('F y', $clean_event_start);
-			$time_event_end = date('H:i', $clean_event_end);
-			$event_date = date('j M', $clean_event_start) . ' - ' . date('j M y', $clean_event_end);
-
-			// Create post object
-			$event_post = array(
-				'post_title'    => wp_strip_all_tags(ucwords($event_title)),
-				'post_content'  => $event_desciption,
-				'post_status'   => 'publish',
-				'post_type' => 'churchsuite_events',
-				'import_id' => $event_id,
-				'post_date' => $event_created,
-				'post_modified' => $event_modified,
-				'post_author'   => 10,
-				'meta_input'   => array(
-					'event_start' => $clean2_event_start,
-					'event_end' => $clean2_event_end,
-					'event_date' => $event_date,
-					'event_start_time' => $time_event_start,
-					'event_end_time' => $time_event_end,
-					'event_month' => $event_month,
-					'event_id' => $event_id,
-					'event_identifier' => $event_identifier,
-					'event_featured' => $event_featured,
-					'event_cat_id' => $event_cat_id,
-					'event_cat_name' => $event_cat_name,
-					'event_tickets' => $event_tickets,
-					'event_tickets_url' => $event_tickets_url,
-					'event_featured_image_URL' => $event_featured_image,
-				),
-			);
-
-			$result = media_sideload_image($event_featured_image, $event_id);
-
-			// then find the last image added to the post attachments
-			$attachments = get_posts(array('numberposts' => '1', 'post_parent' => $event_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
-
-			// $post_id == the post you want the image to be attached to
-			// $video_thumb_url == the vimeo video's thumb url
-			// $description == optional description
-
-
-			$content = get_post($event_id);
-
-			if ($content) {
-				if (sizeof($attachments) > 0) {
-					// set image as the post thumbnail
-					set_post_thumbnail($event_id, $attachments[0]->ID);
-				}
-				wp_update_post($event_post);
-			} else {
-
-				if (sizeof($attachments) > 0) {
-					// set image as the post thumbnail
-					set_post_thumbnail($event_id, $attachments[0]->ID);
-				}
-
-				wp_insert_post($event_post);
-			}
-		}
-	}
-	add_action('init', 'ChurchSuite_Import_Events');
-
-	// Scheduled Action Hook
-	function ChurchSuite_EventsCRON()
 	{
 
 		$response = wp_remote_get('https://' . get_option('cep_accountid') . '.churchsuite.co.uk/embed/calendar/json');
@@ -287,12 +248,79 @@ if (!function_exists('churchsuite_events')) {
 				),
 			);
 
+			$content = get_post($event_id);
+
+			if ($content) {
+				wp_update_post($event_post);
+			} else {
+				wp_insert_post($event_post);
+			}
+		}
+	}
+	add_action('init', 'ChurchSuite_Import_Events');
+
+	// Scheduled Action Hook
+	function ChurchSuite_EventsCRON()
+	{
+
+		$response = wp_remote_get('https://' . get_option('cep_accountid') . '.churchsuite.co.uk/embed/calendar/json');
+		$body     = wp_remote_retrieve_body($response);
+
+		$events = json_decode($body);
+
+		foreach ((array)$events as $event) {
+			$event_title = $event->name;
+			$event_id = $event->id;
+			$event_featured_image = $event->images->square_100;
+			$event_identifier = $event->identifier;
+			$event_desciption = $event->description;
+			$event_start = $event->datetime_start;
+			$event_end = $event->datetime_end;
+			$event_cat_name = $event->category->name;
+			$event_cat_id = $event->category->id;
+			$event_featured = $event->signup_options->public->featured;
+			$event_tickets = $event->signup_options->tickets->enabled;
+			$event_tickets_url = $event->signup_options->tickets->url;
+			$event_created = $event->ctime;
+			$event_modified = $event->mtime;
+			$clean_event_start = strtotime($event_start);
+			$clean2_event_start = date('Y-m-d', $clean_event_start);
+			$time_event_start = date('H:i', $clean_event_start);
+			$clean_event_end = strtotime($event_end);
+			$clean2_event_end = date('Y-m-d', $clean_event_end);
+			$event_month = date('F y', $clean_event_start);
+			$time_event_end = date('H:i', $clean_event_end);
+			$event_date = date('j M', $clean_event_start) . ' - ' . date('j M y', $clean_event_end);
+
+			// Create post object
+			$event_post = array(
+				'post_title'    => wp_strip_all_tags(ucwords($event_title)),
+				'post_content'  => $event_desciption,
+				'post_status'   => 'publish',
+				'post_type' => 'churchsuite_events',
+				'import_id' => $event_id,
+				'post_date' => $event_created,
+				'post_modified' => $event_modified,
+				'post_author'   => 10,
+				'meta_input'   => array(
+					'event_start' => $clean2_event_start,
+					'event_end' => $clean2_event_end,
+					'event_date' => $event_date,
+					'event_start_time' => $time_event_start,
+					'event_end_time' => $time_event_end,
+					'event_month' => $event_month,
+					'event_id' => $event_id,
+					'event_identifier' => $event_identifier,
+					'event_featured' => $event_featured,
+					'event_cat_id' => $event_cat_id,
+					'event_cat_name' => $event_cat_name,
+					'event_tickets' => $event_tickets,
+					'event_tickets_url' => $event_tickets_url,
+					'event_featured_image_URL' => $event_featured_image,
+				),
+			);
 
 			$content = get_post($event_id);
-			// load the image
-
-			// then find the last image added to the post attachments
-
 
 			if ($content) {
 				wp_update_post($event_post);
@@ -481,5 +509,24 @@ if (!function_exists('churchsuite_events')) {
 			// Schedule the event
 			wp_schedule_event(time(), 'daily', 'old_event_delete');
 		}
+	}
+
+
+
+	$event_id = $_GET['event_id'];
+	$event_featured_image = $_GET['event_featured_image'];
+	$event_title = $_GET['event_title'];
+
+	// load the image
+	$result = media_sideload_image($event_featured_image, $event_id, $event_title);
+
+	// then find the last image added to the post attachments
+	$attachments = get_posts(array('numberposts' => '1', 'post_parent' => $event_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
+
+
+	if (sizeof($attachments) > 0) {
+
+		// set image as the post thumbnail
+		set_post_thumbnail($event_id, $attachments[0]->ID);
 	}
 }
